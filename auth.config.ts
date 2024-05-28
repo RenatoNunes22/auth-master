@@ -29,6 +29,8 @@ export default {
                     )
                     if (passwordMatch) return user
                     return null
+                } else {
+                    return null
                 }
             },
         }),
