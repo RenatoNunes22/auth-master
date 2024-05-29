@@ -4,6 +4,9 @@ import { AuthError } from 'next-auth'
 import { signIn } from '@/auth'
 import { LoginSchema } from '@/schemas/index'
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
+import { sendVerificationEmail } from '@/lib/mail'
+import { generateVerificationToken } from '@/lib/tokens'
+import { getUserByEmail } from '@/data/user'
 
 export const login = async (data: z.infer<typeof LoginSchema>) => {
     const validatedFields = LoginSchema.safeParse(data)
@@ -12,6 +15,22 @@ export const login = async (data: z.infer<typeof LoginSchema>) => {
     }
 
     const { email, password } = validatedFields.data
+    const existingUser = await getUserByEmail(email)
+    if (!existingUser || !existingUser.email || !existingUser.password) {
+        return { error: 'Email or password is incorrect!' }
+    }
+
+    if (!existingUser.emailVerified) {
+        const verificationToken = await generateVerificationToken(
+            existingUser.email
+        )
+        await sendVerificationEmail(
+            verificationToken.email,
+            verificationToken.token
+        )
+        return { success: 'Confirmation email sent!' }
+    }
+
     try {
         await signIn('credentials', {
             email,

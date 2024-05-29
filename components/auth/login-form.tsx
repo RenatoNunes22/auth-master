@@ -38,11 +38,8 @@ const LoginForm = () => {
 
         startTransition(async () => {
             await login(data).then((res) => {
-                if (res?.error) {
-                    setError(res.error)
-                } else {
-                    setSuccess('Login successful')
-                }
+                setError(res?.error)
+                setSuccess(res?.success)
             })
         })
     }
