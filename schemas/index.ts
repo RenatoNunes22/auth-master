@@ -5,6 +5,10 @@ export const LoginSchema = z.object({
   password: z.string().min(6),
 });
 
+export const ResetSchema = z.object({
+  email: z.string().email({ message: "Invalid email" })
+});
+
 export const RegisterSchema = z.object({
   email: z.string().email({ message: "Invalid email" }),
   password: z
