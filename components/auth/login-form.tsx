@@ -21,7 +21,8 @@ import {
 import { Button } from '../ui/button'
 import Link from 'next/link'
 
-const ResetForm = () => {
+const LoginForm = () => {
+    const [showTwoFactor, setShowTwoFactor] = useState(false)
     const [error, setError] = useState<string | undefined>('')
     const [success, setSuccess] = useState<string | undefined>('')
     const [isPending, startTransition] = useTransition()
@@ -39,8 +40,21 @@ const ResetForm = () => {
 
         startTransition(async () => {
             await login(data).then((res) => {
-                setError(res?.error)
-                setSuccess(res?.success)
+               if(res?.error){
+                 form.reset()
+                 setError(res.error)
+               }
+
+               if(res?.success){
+                  form.reset()
+                  setSuccess(res.success)
+               }
+
+               if(res?.twoFactor){
+                  setShowTwoFactor(true)
+               }
+            }).catch(() => {
+              setError("Something went wrong")
             })
         })
     }
@@ -58,6 +72,28 @@ const ResetForm = () => {
                     className="space-y-6"
                 >
                     <div className="space-y-4">
+                    {showTwoFactor && (
+                      <FormField
+                          control={form.control}
+                          name="code"
+                          render={({ field }) => (
+                              <FormItem>
+                                  <FormLabel>Two Factor Code</FormLabel>
+                                  <FormControl>
+                                      <Input
+                                          {...field}
+                                          disabled={isPending}
+                                          placeholder="123456"
+                                          type="text"
+                                      />
+                                  </FormControl>
+                                  <FormMessage />
+                              </FormItem>
+                          )}
+                      />
+                    )}
+                    {!showTwoFactor && (
+                      <>
                         <FormField
                             control={form.control}
                             name="email"
@@ -97,6 +133,8 @@ const ResetForm = () => {
                                 </FormItem>
                             )}
                         />
+                        </>
+                        )}
                     </div>
                     <FormError message={error} />
                     <FormSuccess message={success} />
@@ -105,7 +143,7 @@ const ResetForm = () => {
                         type="submit"
                         className="w-full"
                     >
-                        Login
+                        {showTwoFactor ? 'Verify' : 'Login'}
                     </Button>
                 </form>
             </Form>
@@ -113,4 +151,4 @@ const ResetForm = () => {
     )
 }
 
-export default ResetForm
+export default LoginForm

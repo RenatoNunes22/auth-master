@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/form'
 import { Button } from '@/components/ui/button'
 
-const LoginForm = () => {
+const ResetForm = () => {
     const [error, setError] = useState<string | undefined>('')
     const [success, setSuccess] = useState<string | undefined>('')
     const [isPending, startTransition] = useTransition()
@@ -89,4 +89,4 @@ const LoginForm = () => {
     )
 }
 
-export default LoginForm
+export default ResetForm
