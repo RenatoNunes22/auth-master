@@ -7,7 +7,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useCurrentUser } from "@/hooks/user-current-user"
+import { useCurrentUser } from "@/hooks/use-current-user"
 
 import {
   Avatar,
