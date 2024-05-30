@@ -20,8 +20,11 @@ import {
 } from '@/components/ui/form'
 import { Button } from '../ui/button'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 
 const LoginForm = () => {
+    const searchParams = useSearchParams()
+    const callbackUrl = searchParams.get('callbackUrl')
     const [showTwoFactor, setShowTwoFactor] = useState(false)
     const [error, setError] = useState<string | undefined>('')
     const [success, setSuccess] = useState<string | undefined>('')
@@ -39,7 +42,7 @@ const LoginForm = () => {
         setSuccess('')
 
         startTransition(async () => {
-            await login(data).then((res) => {
+            await login(data, callbackUrl).then((res) => {
                if(res?.error){
                  form.reset()
                  setError(res.error)
